@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+//butterknife step 2
+apply plugin: 'com.jakewharton.butterknife'
+//lambda表达式 step 2
+apply plugin: 'me.tatarka.retrolambda'
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.iim.ego"
+        minSdkVersion 15
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    //RxLifeCycle step1
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+    //lambda表达式 step 3
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+    //butterknife step 3
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    //gson
+    compile 'com.google.code.gson:gson:2.8.0'
+    //glide
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    //okhttp3
+    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
+    compile 'com.squareup.okhttp3:okhttp:3.1.2'
+    //retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    //retrofit的Rxjava接收
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+//    //RxJava
+    compile "io.reactivex.rxjava2:rxjava:2.0.1"
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+//    //RxLifeCycle step 2
+    compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
+    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
+    //EventBus step 2
+    compile 'com.github.adzcsx2:EventBusL:ad5885dcf8'
+    //Logger
+    compile 'com.orhanobut:logger:1.15'
+    //支持复杂布局的RecyclerView   用法详见url:https://github.com/llxdaxia/RecyclerView
+    compile 'cn.lemon:RefreshRecyclerView:1.1.9'
+}
