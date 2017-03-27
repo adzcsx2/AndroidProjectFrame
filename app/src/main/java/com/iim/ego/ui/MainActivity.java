@@ -10,22 +10,23 @@ import android.widget.TextView;
 
 import com.iim.ego.R;
 import com.iim.ego.base.BaseActivity;
+import com.iim.ego.exception.RxException;
 import com.iim.ego.model.NameBean;
 import com.iim.ego.net.HttpUtil;
 import com.iim.ego.util.L;
-import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
+import com.iim.ego.util.RxHelper;
+import com.iim.ego.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.lemon.view.RefreshRecyclerView;
 import cn.lemon.view.adapter.Action;
 import cn.lemon.view.adapter.BaseViewHolder;
 import cn.lemon.view.adapter.RecyclerAdapter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -35,7 +36,17 @@ public class MainActivity extends BaseActivity {
     TextView tv;
     Handler handler;
 
-
+    @OnClick(R.id.tv)
+    public void tv(){
+        HttpUtil.getApiService()
+                .getWeather("深圳")
+                .compose(RxHelper.io_main(MainActivity.this))
+//                        .compose(handleResult())
+                .subscribe(result ->{
+                    L.e(result.getData().getGanmao());
+                    ToastUtil.show(result.getData().getGanmao(),false);
+                },new RxException<>(e->e.printStackTrace()));
+    }
     @Override
     protected int layoutInit() {
         return R.layout.activity_main;
@@ -43,14 +54,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void bindEvent() {
-        HttpUtil.getApiService()
-                .getWeather("深圳")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(RxLifecycleAndroid.bindActivity(lifecycle()))
-                .subscribe((s)-> L.e(s.getData().getGanmao()));
-
-
         tv.setText("nihao");
         mRecyclerView.setSwipeRefreshColors(0xFF437845, 0xFFE44F98, 0xFF2FAC21);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -6,7 +6,7 @@ import java.util.List;
  * Created by Hoyn on 17/3/24.
  */
 
-public class WeatherBean extends BaseBean{
+public class WeatherBean {
 
     /**
      * desc : OK

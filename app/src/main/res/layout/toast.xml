@@ -12,14 +12,14 @@
     android:paddingTop="30dp" >
 
     <ImageView
-        android:id="@+id/ImageView"
+        android:id="@+id/iv_imageview"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_marginRight="5dp"
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/message"
+        android:id="@+id/tv_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"

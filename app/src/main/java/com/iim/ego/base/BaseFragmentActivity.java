@@ -11,11 +11,9 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.iim.ego.R;
 import com.iim.ego.ui.MainActivity;
-import com.iim.ego.util.MYToast;
+import com.iim.ego.util.ToastUtil;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import java.lang.ref.WeakReference;
@@ -214,7 +212,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
         if (isLoginOut()) {
             //连续按2次返回键退出
             if ((System.currentTimeMillis() - exitTime) > 1000) {
-                MYToast.makeText(context.getApplicationContext(), R.mipmap.ic_launcher,"再按一次退出", Toast.LENGTH_SHORT).show();
+                ToastUtil.show("再按一次退出",false);
                 exitTime = System.currentTimeMillis();
             } else {
                 finishAllActivitys();

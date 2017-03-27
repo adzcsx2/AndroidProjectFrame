@@ -11,11 +11,10 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.iim.ego.R;
+import com.iim.ego.model.BaseBean;
 import com.iim.ego.ui.MainActivity;
-import com.iim.ego.util.MYToast;
+import com.iim.ego.util.ToastUtil;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.lang.ref.WeakReference;
@@ -25,6 +24,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 
 
 /**
@@ -215,7 +215,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         if (isLoginOut()) {
             //连续按2次返回键退出
             if ((System.currentTimeMillis() - exitTime) > 1000) {
-                MYToast.makeText(context.getApplicationContext(), R.mipmap.ic_launcher,"再按一次退出", Toast.LENGTH_SHORT).show();
+                ToastUtil.show("再按一次退出",false);
                 exitTime = System.currentTimeMillis();
             } else {
                 finishAllActivitys();
@@ -333,6 +333,44 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     protected void setTextViewSize(TextView tv, int dimenId) {
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(dimenId));
+    }
+
+
+
+    /**
+     * Rx优雅处理服务器返回
+     *
+     * @param <T>
+     * @return
+     */
+    public <T> ObservableTransformer<T, T> handleResult() {
+        return upstream ->
+             upstream.flatMap(result -> {
+                        BaseBean<T> baseResult = (BaseBean<T>) result;
+                        if (baseResult.isSuccess()) {
+                            return createData(baseResult.data);
+                        } else if (baseResult.isTokenInvalid()) {
+                            //处理token失效，tokenInvalid方法在BaseActivity 实现
+                            tokenInvalid();
+                        } else {
+                            return Observable.error(new Exception(baseResult.msg));
+                        }
+                        return Observable.empty();
+                    }
+
+            );
+
+    }
+
+    private <T> Observable<T> createData(final T t) {
+        return Observable.create(subscriber -> {
+            try {
+                subscriber.onNext(t);
+                subscriber.onComplete();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
     }
 
     //RxJava的Token失效

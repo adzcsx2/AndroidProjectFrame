@@ -23,6 +23,9 @@ public class ImageUtil {
     public static void load(Context context,String url,ImageView mImageView){
         Glide.with(context).load(url).into(mImageView);
     }
+    public static void load(Context contedxt, int resId, ImageView mImageView){
+        Glide.with(contedxt).load(resId).into(mImageView);
+    }
     public static void load(Activity activity, String url, ImageView mImageView){
         Glide.with(activity).load(url).into(mImageView);
     }
@@ -35,5 +38,6 @@ public class ImageUtil {
     public static void load(FragmentActivity activity, String url, ImageView mImageView){
         Glide.with(activity).load(url).into(mImageView);
     }
+
 
 }

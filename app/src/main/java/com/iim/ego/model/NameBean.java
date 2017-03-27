@@ -4,7 +4,7 @@ package com.iim.ego.model;
  * Created by Hoyn on 17/3/23.
  */
 
-public class NameBean extends BaseBean{
+public class NameBean  {
     String name;
 
     public NameBean(String name) {

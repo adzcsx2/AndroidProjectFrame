@@ -1,10 +1,10 @@
 package com.iim.ego.util;
 
 import com.iim.ego.base.BaseActivity;
-import com.iim.ego.model.BaseBean;
+import com.iim.ego.base.BaseFragment;
+import com.iim.ego.base.BaseFragmentActivity;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
-import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -19,41 +19,28 @@ public class RxHelper<T> {
      * 并且拦截所有错误，不让app崩溃
      *
      * @param <T> 数据类型
+     * @param activity/fragment activity/fragment对象，用于绑定生命周期
      * @return Transformer
      */
-    public static <T> ObservableTransformer<BaseBean, BaseBean> io_main(BaseActivity activity) {
+    public static <T> ObservableTransformer<T, T> io_main(BaseActivity activity) {
         return upstream ->
                 upstream.subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .compose(RxLifecycleAndroid.bindActivity(activity.lifecycle()))
-                        .flatMap(result -> {
-                            int code = result.getCode();
-                            if (code == 0) {
-                                //成功
-                                return success(result);
-                            } else if (code == 1) {
-                                return activity.tokenInvalid();
-                            } else {
-                                return Observable.error(new Exception(result.getMsg()));
-                            }
-                        });
+                        .compose(RxLifecycleAndroid.bindActivity(activity.lifecycle()));
     }
-    /**
-     * 取得成功的数据
-     * @param t
-     * @param <T>
-     * @return
-     */
-    public static <T> Observable<T> success(T t) {
-        return Observable.create(subscriber -> {
-            try {
-                subscriber.onNext(t);
-                subscriber.onComplete();
-            } catch (Exception e) {
-                subscriber.onError(e);
-            }
-        });
+    public static <T> ObservableTransformer<T, T> io_main(BaseFragmentActivity activity) {
+        return upstream ->
+                upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(RxLifecycleAndroid.bindActivity(activity.lifecycle()));
     }
+    public static <T> ObservableTransformer<T, T> io_main(BaseFragment fragment) {
+        return upstream ->
+                upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(RxLifecycleAndroid.bindFragment(fragment.lifecycle()));
+    }
+
 
 
 }
