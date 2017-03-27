@@ -3,8 +3,10 @@ package com.iim.ego.util;
 import com.iim.ego.base.BaseActivity;
 import com.iim.ego.base.BaseFragment;
 import com.iim.ego.base.BaseFragmentActivity;
+import com.iim.ego.model.BaseBean;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
+import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -41,6 +43,49 @@ public class RxHelper<T> {
                         .compose(RxLifecycleAndroid.bindFragment(fragment.lifecycle()));
     }
 
-
+    /**
+     * Rx优雅处理服务器返回
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> ObservableTransformer<T, T> handleResult() {
+        return upstream ->
+                upstream.flatMap(result -> {
+                            BaseBean<T> baseResult = (BaseBean<T>) result;
+                            if (baseResult.isSuccess()) {
+                                return createData(baseResult.data);
+                            } else if (baseResult.isTokenInvalid()) {
+                                //处理token失效，tokenInvalid方法在BaseActivity 实现
+                                tokenInvalid();
+                            } else {
+                                return Observable.error(new Exception(baseResult.msg));
+                            }
+                            return Observable.empty();
+                        }
+                );
+    }
+    //正常获取数据
+    private static <T> Observable<T> createData(final T t) {
+        return Observable.create(subscriber -> {
+            try {
+                subscriber.onNext(t);
+                subscriber.onComplete();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
+    }
+    //RxJava的Token失效
+    private  static <T> Observable<T> tokenInvalid() {
+        return Observable.create(subscriber -> {
+            try {
+                //处理token失效逻辑
+                subscriber.onComplete();
+            } catch (Exception e) {
+                subscriber.onError(e);
+            }
+        });
+    }
 
 }

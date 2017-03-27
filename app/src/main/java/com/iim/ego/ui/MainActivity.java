@@ -40,12 +40,12 @@ public class MainActivity extends BaseActivity {
     public void tv(){
         HttpUtil.getApiService()
                 .getWeather("深圳")
-                .compose(RxHelper.io_main(MainActivity.this))
-//                        .compose(handleResult())
+                .compose(RxHelper.io_main(MainActivity.this)) //线程调度，并且绑定生命周期
+//                .compose(RxHelper.handleResult())             //请求数据的处理，及Token失效和请求失败异常推送
                 .subscribe(result ->{
                     L.e(result.getData().getGanmao());
                     ToastUtil.show(result.getData().getGanmao(),false);
-                },new RxException<>(e->e.printStackTrace()));
+                },new RxException<>(e->e.printStackTrace())); //集中的请求失败处理
     }
     @Override
     protected int layoutInit() {
