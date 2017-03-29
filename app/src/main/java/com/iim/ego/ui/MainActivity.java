@@ -47,6 +47,13 @@ public class MainActivity extends BaseActivity {
                     ToastUtil.show(result.getData().getGanmao(),false);
                 },new RxException<>(e->e.printStackTrace())); //集中的请求失败处理
     }
+
+
+    @Override
+    protected String setStatusBarColor() {
+        return null;
+    }
+
     @Override
     protected int layoutInit() {
         return R.layout.activity_main;

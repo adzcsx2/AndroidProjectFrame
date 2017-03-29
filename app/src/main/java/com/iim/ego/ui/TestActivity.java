@@ -10,6 +10,11 @@ import com.iim.ego.base.BaseActivity;
 public class TestActivity extends BaseActivity{
 
     @Override
+    protected String setStatusBarColor() {
+        return null;
+    }
+
+    @Override
     protected int layoutInit() {
         return R.layout.activity_main2;
     }
