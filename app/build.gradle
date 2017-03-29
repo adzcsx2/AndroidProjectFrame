@@ -66,4 +66,7 @@ dependencies {
     compile 'com.orhanobut:logger:1.15'
     //支持复杂布局的RecyclerView   用法详见url:https://github.com/llxdaxia/RecyclerView
     compile 'cn.lemon:RefreshRecyclerView:1.1.9'
+    //android 屏幕适配
+    compile 'com.zhy:autolayout:1.4.5'
+
 }

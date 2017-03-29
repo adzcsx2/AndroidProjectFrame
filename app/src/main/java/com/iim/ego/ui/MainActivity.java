@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity {
                 },1500);
             }
         });
+
         mRecyclerView.setRefreshAction(()->
                 handler.postDelayed(()->{
                     myAdapter.add(new NameBean("hhh"));
