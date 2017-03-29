@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.iim.ego.ui.MainActivity;
 import com.iim.ego.util.ToastUtil;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 import com.zhy.autolayout.AutoFrameLayout;
 import com.zhy.autolayout.AutoLinearLayout;
@@ -76,7 +75,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         //去掉titlebar-全屏模式
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+//        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         if (!openedActivitys.keySet().contains(getClass().getSimpleName())) {
             openedActivitys.put(getClass().getSimpleName(),
                     new WeakReference<Activity>(this));
