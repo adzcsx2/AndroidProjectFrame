@@ -113,7 +113,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         }
         int color= Color.parseColor(statusBarColor);
         //4.4版本及以上可用
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // 状态栏沉浸效果
             Window window = ((Activity) context).getWindow();
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
