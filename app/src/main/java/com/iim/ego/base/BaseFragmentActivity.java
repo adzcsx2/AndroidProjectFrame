@@ -1,20 +1,33 @@
 package com.iim.ego.base;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.iim.ego.ui.MainActivity;
 import com.iim.ego.util.ToastUtil;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
+import com.zhy.autolayout.AutoFrameLayout;
+import com.zhy.autolayout.AutoLinearLayout;
+import com.zhy.autolayout.AutoRelativeLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
@@ -32,7 +45,9 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragmentActivity extends RxFragmentActivity {
 
-
+    private static final String LAYOUT_LINEARLAYOUT = "LinearLayout";
+    private static final String LAYOUT_FRAMELAYOUT = "FrameLayout";
+    private static final String LAYOUT_RELATIVELAYOUT = "RelativeLayout";
 
     /**
      * activity控制
@@ -56,7 +71,12 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
         // 隐藏通知栏
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        //强制竖屏
+        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        //去掉titlebar-全屏模式
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         if (!openedActivitys.keySet().contains(getClass().getSimpleName())) {
             openedActivitys.put(getClass().getSimpleName(),
                     new WeakReference<Activity>(this));
@@ -64,6 +84,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
 
         this.savedInstanceState = savedInstanceState;
         setContentView(layoutInit());
+        setTranslateStatusBar(setStatusBarColor());
         context = this;
         init(savedInstanceState);
         ButterKnife.bind(this);
@@ -72,6 +93,73 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
         bindEvent();
 
     }
+
+    /**
+     * 设置沉浸式状态栏
+     * @param color
+     */
+    protected void setTranslateStatusBar(String color){
+        Activity activity = this;
+        boolean isShowStatusBar = true;
+        if(color==null){
+            color = "#ffffff";
+            isShowStatusBar = false;
+        }
+        int statusColor = Color.parseColor(color);
+        //针对版本5.x以上的即LOLLIPOP以上的
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            //设置透明状态栏,这样才能让 ContentView 向上
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(statusColor);
+            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View .
+                // 使其不为系统 View 预留空间.不预留空间的话 状态栏就会覆盖布局顶部
+                ViewCompat.setFitsSystemWindows(mChildView, isShowStatusBar);
+            }
+        }
+    }
+
+    protected String setStatusBarColor(){
+        return null;
+    }
+
+    /**
+     * 屏幕适配配置属性
+     * @param name
+     * @param context
+     * @param attrs
+     * @return
+     */
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs)
+    {
+        View view = null;
+        if (name.equals(LAYOUT_FRAMELAYOUT))
+        {
+            view = new AutoFrameLayout(context, attrs);
+        }
+
+        if (name.equals(LAYOUT_LINEARLAYOUT))
+        {
+            view = new AutoLinearLayout(context, attrs);
+        }
+
+        if (name.equals(LAYOUT_RELATIVELAYOUT))
+        {
+            view = new AutoRelativeLayout(context, attrs);
+        }
+
+        if (view != null) return view;
+
+        return super.onCreateView(name, context, attrs);
+    }
+
 
     protected abstract int layoutInit();
 
@@ -331,6 +419,4 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
     protected void setTextViewSize(TextView tv, int dimenId) {
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(dimenId));
     }
-
-
 }
