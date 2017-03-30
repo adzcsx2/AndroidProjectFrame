@@ -3,7 +3,7 @@ package com.iim.ego.base;
 import android.app.Application;
 import android.content.Context;
 
-import com.zhy.autolayout.config.AutoLayoutConifg;
+import hoyn.autolayout.config.AutoLayoutConifg;
 
 
 /**

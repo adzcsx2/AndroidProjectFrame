@@ -26,9 +26,6 @@ import android.widget.TextView;
 import com.iim.ego.ui.MainActivity;
 import com.iim.ego.util.ToastUtil;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
-import com.zhy.autolayout.AutoFrameLayout;
-import com.zhy.autolayout.AutoLinearLayout;
-import com.zhy.autolayout.AutoRelativeLayout;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -37,6 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import hoyn.autolayout.AutoFrameLayout;
+import hoyn.autolayout.AutoRelativeLayout;
 
 
 /**
@@ -201,10 +200,10 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
             view = new AutoFrameLayout(context, attrs);
         }
 
-        if (name.equals(LAYOUT_LINEARLAYOUT))
-        {
-            view = new AutoLinearLayout(context, attrs);
-        }
+//        if (name.equals(LAYOUT_LINEARLAYOUT))
+//        {
+//            view = new AutoLinearLayout(context, attrs);
+//        }
 
         if (name.equals(LAYOUT_RELATIVELAYOUT))
         {

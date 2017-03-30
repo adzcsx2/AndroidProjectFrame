@@ -1,54 +1,25 @@
 package com.iim.ego.ui;
 
-import android.content.Context;
-import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
 
 import com.iim.ego.R;
 import com.iim.ego.base.BaseActivity;
-import com.iim.ego.exception.RxException;
-import com.iim.ego.model.NameBean;
-import com.iim.ego.net.HttpUtil;
-import com.iim.ego.util.GsonUtil;
-import com.iim.ego.util.L;
-import com.iim.ego.util.RxHelper;
-import com.iim.ego.util.ToastUtil;
+import com.iim.ego.ui.fragment.StuffFragment;
+import com.iim.ego.widget.tabview.TabView;
+import com.iim.ego.widget.tabview.TabViewChild;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import cn.lemon.view.RefreshRecyclerView;
-import cn.lemon.view.adapter.Action;
-import cn.lemon.view.adapter.BaseViewHolder;
-import cn.lemon.view.adapter.RecyclerAdapter;
 
 public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.recycler_view)
-    RefreshRecyclerView mRecyclerView;
-    @BindView(R.id.tv)
-    TextView tv;
-    Handler handler;
 
-    @OnClick(R.id.tv)
-    public void tv(){
-        HttpUtil.getApiService()
-                .getWeather("深圳")
-                .compose(RxHelper.io_main(MainActivity.this)) //线程调度，并且绑定生命周期
-//                .compose(RxHelper.handleResult())             //请求数据的处理，及Token失效和请求失败异常推送
-                .subscribe(result ->{
-                    L.e(GsonUtil.toJson(result));
-                    ToastUtil.show(GsonUtil.toJson(result),false);
-                },new RxException<>(e->e.printStackTrace())); //集中的请求失败处理
-    }
+    @BindView(R.id.mTabView)
+    TabView mTabView;
 
+    Fragment stuffFragment = getFragmentInstance(StuffFragment.class);
 
     @Override
     protected int setStatusBarColor() {
@@ -62,101 +33,14 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void bindEvent() {
-        tv.setText("nihao");
-        mRecyclerView.setSwipeRefreshColors(0xFF437845, 0xFFE44F98, 0xFF2FAC21);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        final List<NameBean> data = new ArrayList<NameBean>();
-        data.add(new NameBean("aaa"));
-        data.add(new NameBean("aaa"));
-        data.add(new NameBean("aaa"));
-        data.add(new NameBean("aaa"));
-        data.add(new NameBean("aaa"));
-        data.add(new NameBean("aaa"));
-
-        for (NameBean x:data) {
-            Log.e("TAG",x.getName());
-        }
-
-
-        final MyAdapter myAdapter = new MyAdapter(this,data);
-        handler = new Handler(getMainLooper());
-        mRecyclerView.setAdapter(myAdapter);
-        mRecyclerView.setRefreshAction(new Action() {
-            @Override
-            public void onAction() {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        myAdapter.add(new NameBean("hhh"));
-                        mRecyclerView.dismissSwipeRefresh();
-                    }
-                },1500);
-            }
-        });
-
-        mRecyclerView.setRefreshAction(()->
-                handler.postDelayed(()->{
-                    myAdapter.add(new NameBean("hhh"));
-                    mRecyclerView.dismissSwipeRefresh();
-                },1500));
-
-
-        mRecyclerView.setLoadMoreAction(new Action() {
-            @Override
-            public void onAction() {
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        myAdapter.add(new NameBean("bbb"));
-                    }
-                },1500);
-            }
-        });
+        List<TabViewChild> tabViewChildList=new ArrayList<>();
+        TabViewChild tab1 = new TabViewChild(R.drawable.logo,R.drawable.logo,"员工",stuffFragment);
+        TabViewChild tab2 = new TabViewChild(R.drawable.logo,R.drawable.logo,"访客",stuffFragment);
+        TabViewChild tab3 = new TabViewChild(R.drawable.logo,R.drawable.logo,"监控",stuffFragment);
+        tabViewChildList.add(tab1);
+        tabViewChildList.add(tab2);
+        tabViewChildList.add(tab3);
+        mTabView.setTabViewChild(tabViewChildList,getSupportFragmentManager());
     }
 
-
-
-    class MyAdapter extends RecyclerAdapter<NameBean> {
-
-        public MyAdapter(Context context) {
-            super(context);
-        }
-
-        public MyAdapter(Context context, List<NameBean> data) {
-            super(context, data);
-        }
-
-        @Override
-        public BaseViewHolder<NameBean> onCreateBaseViewHolder(ViewGroup parent, int viewType) {
-            return new MyHolder(getLayoutInflater().inflate(R.layout.item,parent,false));
-        }
-
-          class MyHolder extends BaseViewHolder<NameBean> {
-            @BindView(R.id.textView)
-            TextView mTextView;
-
-              public MyHolder(View itemView) {
-                  super(itemView);
-                  ButterKnife.bind(this, itemView);
-              }
-
-              @Override
-              public void onInitializeView() {
-                  super.onInitializeView();
-//                   mTextView = findViewById(R.id.textView);
-              }
-
-              @Override
-            public void setData(NameBean data) {
-                super.setData(data);
-                mTextView.setText(data.getName());
-            }
-
-            @Override
-            public void onItemViewClick(NameBean data) {
-                super.onItemViewClick(data);
-                Log.e("aaa", data.getName());
-            }
-        }
-    }
 }

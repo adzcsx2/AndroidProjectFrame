@@ -247,7 +247,6 @@
 # 其他的第三方包
 -keep class android.support.graphics.drawable.**{*;}
 -keep class android.support.v7.**{*;}
--keep class com.zhy.autolayout.**{*;}
 -keep class converter-scalars-2.2.0.jar.**{*;}
 -keep class android.support.test.espresso.**{*;}
 -keep class org.hamcrest.**{*;}
@@ -259,3 +258,4 @@
 -keep class com.bumptech.glide.integration.**{*;}
 -keep class com.trello.rxlifecycle2.**{*;}
 -keep class android.support.**{*;}
+-keep class hoyn.**{*;}
