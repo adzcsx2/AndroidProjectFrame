@@ -16,7 +16,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -68,5 +69,4 @@ dependencies {
     compile 'cn.lemon:RefreshRecyclerView:1.1.9'
     //android 屏幕适配
     compile 'com.zhy:autolayout:1.4.5'
-
 }

@@ -89,7 +89,6 @@ public class ToastUtil  extends  Toast{
 		if(isShowImage){
 			mImageView.setVisibility(View.VISIBLE);
 		}else{
-			L.e("aa");
 			mImageView.setVisibility(View.GONE);
 		}
 		mTextView.setText(text);

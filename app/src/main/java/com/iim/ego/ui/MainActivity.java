@@ -13,6 +13,7 @@ import com.iim.ego.base.BaseActivity;
 import com.iim.ego.exception.RxException;
 import com.iim.ego.model.NameBean;
 import com.iim.ego.net.HttpUtil;
+import com.iim.ego.util.GsonUtil;
 import com.iim.ego.util.L;
 import com.iim.ego.util.RxHelper;
 import com.iim.ego.util.ToastUtil;
@@ -43,15 +44,15 @@ public class MainActivity extends BaseActivity {
                 .compose(RxHelper.io_main(MainActivity.this)) //线程调度，并且绑定生命周期
 //                .compose(RxHelper.handleResult())             //请求数据的处理，及Token失效和请求失败异常推送
                 .subscribe(result ->{
-                    L.e(result.getData().getGanmao());
-                    ToastUtil.show(result.getData().getGanmao(),false);
+                    L.e(GsonUtil.toJson(result));
+                    ToastUtil.show(GsonUtil.toJson(result),false);
                 },new RxException<>(e->e.printStackTrace())); //集中的请求失败处理
     }
 
 
     @Override
-    protected String setStatusBarColor() {
-        return null;
+    protected int setStatusBarColor() {
+        return 0;
     }
 
     @Override

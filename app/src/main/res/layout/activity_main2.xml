@@ -16,6 +16,4 @@
         android:layout_width="508px"
         android:layout_height="390px"
         android:src="@drawable/logo" />
-
-
 </LinearLayout>

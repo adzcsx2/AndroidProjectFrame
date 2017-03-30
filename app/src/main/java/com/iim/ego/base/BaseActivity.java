@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -90,7 +91,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
         this.savedInstanceState = savedInstanceState;
         setContentView(layoutInit());
-        initStatusbar(this,setStatusBarColor());
+        initStatusbar(setStatusBarColor());
         context = this;
         init(savedInstanceState);
         ButterKnife.bind(this);
@@ -101,35 +102,51 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     }
 
     /**
-     * 沉浸模式状态栏初始化
-     * @param context 上下文
-     * @param statusBarColor 沉浸颜色
-     * @return
+     * 沉浸式状态栏
+     * 如果statusBarColorRes为0，则为全屏沉浸式，android5.0以上有效。
+     * 如果statusBarColorRes为资源颜色，则添加一个状态栏颜色，android4.4以上有效
+     * @param statusBarColorRes 资源文件的颜色(R.color.xx)
      */
     @SuppressLint("NewApi")
-    public void initStatusbar(Context context, String statusBarColor) {
-        if(statusBarColor==null){
-            statusBarColor = "#000000";
-        }
-        int color= Color.parseColor(statusBarColor);
-        //4.4版本及以上可用
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // 状态栏沉浸效果
-            Window window = ((Activity) context).getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            //decorview实际上就是activity的外层容器，是一层framlayout
-            view = (ViewGroup) ((Activity) context).getWindow().getDecorView();
-            LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight());
-            //textview是实际添加的状态栏view，颜色可以设置成纯色，也可以加上shape，添加gradient属性设置渐变色
-            textView = new TextView(this);
-            textView.setBackgroundColor(color);
-            textView.setLayoutParams(lParams);
-            view.addView(textView);
+    public void initStatusbar(int statusBarColorRes) {
+        if(statusBarColorRes==0){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                int statusColor = Color.parseColor("#008000");
+                Window window = getWindow();
+                //设置透明状态栏,这样才能让 ContentView 向上
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                //设置状态栏颜色
+                window.setStatusBarColor(statusColor);
+                ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
+                View mChildView = mContentView.getChildAt(0);
+                if (mChildView != null) {
+                    //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View .
+                    // 使其不为系统 View 预留空间.不预留空间的话 状态栏就会覆盖布局顶部
+                    ViewCompat.setFitsSystemWindows(mChildView, false);
+                }
+            }
+        }else{
+            //4.4版本及以上可用
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                // 状态栏沉浸效果
+                Window window = getWindow();
+                window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setFlags(
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                //decorview实际上就是activity的外层容器，是一层framlayout
+                view = (ViewGroup)getWindow().getDecorView();
+                LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight());
+                //textview是实际添加的状态栏view，颜色可以设置成纯色，也可以加上shape，添加gradient属性设置渐变色
+                textView = new TextView(this);
+                textView.setBackgroundResource(statusBarColorRes);
+                textView.setLayoutParams(lParams);
+                view.addView(textView);
+            }
         }
     }
 
@@ -166,7 +183,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     }
 
-    protected abstract String setStatusBarColor();
+    protected abstract int setStatusBarColor();
 
     /**
      * 屏幕适配配置属性
