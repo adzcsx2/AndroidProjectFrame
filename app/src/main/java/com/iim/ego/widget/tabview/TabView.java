@@ -25,8 +25,10 @@ import com.iim.ego.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import hoyn.autolayout.AutoRelativeLayout;
 
-public class TabView extends RelativeLayout {
+
+public class TabView extends AutoRelativeLayout {
     private static final int RMP = RelativeLayout.LayoutParams.MATCH_PARENT;
     private static final int RWC = RelativeLayout.LayoutParams.WRAP_CONTENT;
     private static final int LWC = LinearLayout.LayoutParams.WRAP_CONTENT;
