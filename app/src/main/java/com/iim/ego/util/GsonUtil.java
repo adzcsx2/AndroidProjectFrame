@@ -4,7 +4,6 @@ package com.iim.ego.util;
 import com.google.gson.Gson;
 
 
-
 /**
  * Gson的辅助类
  * Created by Hoyn on 16/12/14.

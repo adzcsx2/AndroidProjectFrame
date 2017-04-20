@@ -30,10 +30,17 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include:'*.so',dir:'libs');
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -56,7 +63,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     //RxJava
-    compile "io.reactivex.rxjava2:rxjava:2.0.1"
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     //RxLifeCycle step 2
     compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
@@ -64,10 +71,12 @@ dependencies {
     //Logger
     compile 'com.orhanobut:logger:1.15'
     //支持复杂布局的RecyclerView   用法详见url:https://github.com/llxdaxia/RecyclerView
-    compile 'cn.lemon:RefreshRecyclerView:1.1.9'
+    compile 'com.github.adzcsx2:RecyclerView:4aff93b861'
+    //    compile 'cn.lemon:RefreshRecyclerView:1.1.9'
     /////////////////////////////////////自定义库//////////////////////////////////////////////////
     //EventBus
     compile 'com.github.adzcsx2:EventBusL:ad5885dcf8'
     //android 屏幕适配
-    compile 'com.github.adzcsx2:AndroidAutoLayout:dafb746418'
+    compile 'com.github.adzcsx2:AndroidAutoLayout:27c326f8cf'
+    compile files('libs/BASE64.jar')
 }

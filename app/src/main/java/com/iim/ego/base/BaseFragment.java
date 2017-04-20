@@ -17,6 +17,7 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @author Hoyn
@@ -36,7 +37,7 @@ public abstract class BaseFragment extends RxFragment {
 	//fragment控制(恢复状态)
 	protected Fragment mLastFragment;
 	private int layoutId;
-
+	Unbinder unbinder;
 	public BaseFragment() {
 	}
 
@@ -49,6 +50,7 @@ public abstract class BaseFragment extends RxFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
+		isCreate = true;
 	}
 
 	@Override
@@ -56,11 +58,11 @@ public abstract class BaseFragment extends RxFragment {
 							 Bundle savedInstanceState) {
 		if (rootView == null) {
 			rootView = inflater.inflate(layoutInit(), container, false);
-			ButterKnife.bind(this, rootView);
+			unbinder = ButterKnife.bind(this, rootView);
 			viewInit();
 			bindPresenter();
 			bindEvent();
-
+			onTransformResume();
 		}
 		// 缓存的rootView需要判断是否已经被加过parent，如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
 		ViewGroup parent = (ViewGroup) rootView.getParent();
@@ -128,10 +130,28 @@ public abstract class BaseFragment extends RxFragment {
 	protected void onTransformResume() {
 
 	}
+	/**
+	 * 是否创建
+	 */
+	protected boolean isCreate = false;
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser && isCreate) {
+			//相当于Fragment的onResume
+			//在这里处理加载数据等操作
+			onResume();
+		} else {
+			//相当于Fragment的onPause
+			onPause();
+		}
+	}
+
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		unbinder.unbind();
 	}
 
 	//利用反射获取fragment实例，如果该实例已经创建，则用不再创建。

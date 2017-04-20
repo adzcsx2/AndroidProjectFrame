@@ -40,23 +40,23 @@ public class RxException<T extends Throwable> implements Consumer<T> {
     public void accept(T t) throws Exception {
         if (t instanceof SocketTimeoutException) {
             Log.e(TAG, "onError: SocketTimeoutException----" + SOCKETTIMEOUTEXCEPTION);
-            ToastUtil.show(SOCKETTIMEOUTEXCEPTION,false);
+            ToastUtil.show(SOCKETTIMEOUTEXCEPTION);
             onError.accept(new Throwable(SOCKETTIMEOUTEXCEPTION));
         } else if (t instanceof HttpException) {
             Log.e(TAG, "onError: HttpException----" + SOCKETTIMEOUTEXCEPTION);
-            ToastUtil.show(HTTPEXCEPTION,false);
+            ToastUtil.show(HTTPEXCEPTION);
             onError.accept(new Throwable(SOCKETTIMEOUTEXCEPTION));
         } else if (t instanceof ConnectException) {
             Log.e(TAG, "onError: ConnectException-----" + CONNECTEXCEPTION);
-            ToastUtil.show(CONNECTEXCEPTION,false);
+            ToastUtil.show(CONNECTEXCEPTION);
             onError.accept(new Throwable(CONNECTEXCEPTION));
         } else if (t instanceof UnknownHostException) {
             Log.e(TAG, "onError: UnknownHostException-----" + UNKNOWNHOSTEXCEPTION);
-            ToastUtil.show(UNKNOWNHOSTEXCEPTION,false);
+            ToastUtil.show(UNKNOWNHOSTEXCEPTION);
             onError.accept(new Throwable(UNKNOWNHOSTEXCEPTION));
         } else {
             Log.e(TAG, "onError:----" + t.getMessage());
-            ToastUtil.show(UNKNOWNEXCEPTION,false);
+            ToastUtil.show(UNKNOWNEXCEPTION);
             onError.accept(t);
         }
     }

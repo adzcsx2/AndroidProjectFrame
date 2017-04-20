@@ -355,7 +355,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
         if (isLoginOut()) {
             //连续按2次返回键退出
             if ((System.currentTimeMillis() - exitTime) > 1000) {
-                ToastUtil.show("再按一次退出",false);
+                ToastUtil.show("再按一次退出");
                 exitTime = System.currentTimeMillis();
             } else {
                 finishAllActivitys();
@@ -373,7 +373,7 @@ public abstract class BaseFragmentActivity extends RxFragmentActivity {
      * @return
      */
     private boolean isLoginOut() {
-        return getClass().getSimpleName().equals(MainActivity.class.getSimpleName());
+       return getClass().getSimpleName().equals(MainActivity.class.getSimpleName());
     }
 
     @Override

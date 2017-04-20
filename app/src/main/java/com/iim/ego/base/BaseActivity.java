@@ -67,19 +67,20 @@ public abstract class BaseActivity extends RxAppCompatActivity {
     private ViewGroup view;
     /*沉浸颜色*/
     private TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // 隐藏软键盘
-//        getWindow().setSoftInputMode(
-//                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         // 隐藏actionBar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 隐藏通知栏
         // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         // WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //强制竖屏
-        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT){
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         //去掉titlebar-全屏模式
@@ -101,15 +102,17 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     }
 
+
     /**
      * 沉浸式状态栏
      * 如果statusBarColorRes为0，则为全屏沉浸式，android5.0以上有效。
      * 如果statusBarColorRes为资源颜色，则添加一个状态栏颜色，android4.4以上有效
+     *
      * @param statusBarColorRes 资源文件的颜色(R.color.xx)
      */
     @SuppressLint("NewApi")
     public void initStatusbar(int statusBarColorRes) {
-        if(statusBarColorRes==0){
+        if (statusBarColorRes == 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 int statusColor = Color.parseColor("#008000");
                 Window window = getWindow();
@@ -127,7 +130,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
                     ViewCompat.setFitsSystemWindows(mChildView, false);
                 }
             }
-        }else{
+        } else {
             //4.4版本及以上可用
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 // 状态栏沉浸效果
@@ -138,7 +141,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
                         WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
                         WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
                 //decorview实际上就是activity的外层容器，是一层framlayout
-                view = (ViewGroup)getWindow().getDecorView();
+                view = (ViewGroup) getWindow().getDecorView();
                 LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight());
                 //textview是实际添加的状态栏view，颜色可以设置成纯色，也可以加上shape，添加gradient属性设置渐变色
@@ -152,6 +155,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     /**
      * 获取状态栏高度
+     *
      * @return
      */
     public int getStatusBarHeight() {
@@ -173,6 +177,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     /**
      * 如果项目中用到了slidingmenu,根据slidingmenu滑动百分比设置statusbar颜色：渐变色效果
+     *
      * @param alpha
      */
     @SuppressLint("NewApi")
@@ -187,27 +192,24 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     /**
      * 屏幕适配配置属性
+     *
      * @param name
      * @param context
      * @param attrs
      * @return
      */
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs)
-    {
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
         View view = null;
-        if (name.equals(LAYOUT_FRAMELAYOUT))
-        {
+        if (name.equals(LAYOUT_FRAMELAYOUT)) {
             view = new AutoFrameLayout(context, attrs);
         }
 
-        if (name.equals(LAYOUT_LINEARLAYOUT))
-        {
+        if (name.equals(LAYOUT_LINEARLAYOUT)) {
             view = new AutoLinearLayout(context, attrs);
         }
 
-        if (name.equals(LAYOUT_RELATIVELAYOUT))
-        {
+        if (name.equals(LAYOUT_RELATIVELAYOUT)) {
             view = new AutoRelativeLayout(context, attrs);
         }
 
@@ -356,7 +358,7 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         if (isLoginOut()) {
             //连续按2次返回键退出
             if ((System.currentTimeMillis() - exitTime) > 1000) {
-                ToastUtil.show("再按一次退出",false);
+                ToastUtil.show("再按一次退出");
                 exitTime = System.currentTimeMillis();
             } else {
                 finishAllActivitys();

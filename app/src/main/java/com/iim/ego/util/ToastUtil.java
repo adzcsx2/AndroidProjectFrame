@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.iim.ego.R;
 import com.iim.ego.base.BaseApplication;
+import com.iim.ego.util.image.ImageUtil;
 
 
 public class ToastUtil  extends  Toast{
@@ -44,7 +45,7 @@ public class ToastUtil  extends  Toast{
 	 */
 
 	public static ToastUtil makeText(Context context, CharSequence text,
-								 int duration) {
+									 int duration) {
 		mToast = new ToastUtil(context);
 
 		// 获取LayoutInflater对象
@@ -80,9 +81,16 @@ public class ToastUtil  extends  Toast{
 	/**
 	 * 显示Toast
 	 * @param text 文字
-	 * @param isShowImage 是否显示图片
      */
-	public static void show(String text, boolean isShowImage){
+	public static void show(String text){
+		showWithImage(text,false);
+	}
+	/**
+	 * 显示Toast
+	 * @param text 文字
+	 * @param isShowImage 是否显示图片
+	 */
+	public static void showWithImage(String text,boolean isShowImage){
 		if(mToast==null){
 			mToast = ToastUtil.makeText(BaseApplication.getContextObject(),"",Toast.LENGTH_SHORT);
 		}
