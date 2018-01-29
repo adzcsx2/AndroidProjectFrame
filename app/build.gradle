@@ -77,6 +77,6 @@ dependencies {
     //EventBus
     compile 'com.github.adzcsx2:EventBusL:ad5885dcf8'
     //android 屏幕适配
-    compile 'com.github.adzcsx2:AndroidAutoLayout:27c326f8cf'
+    compile 'com.github.adzcsx2:AndroidAutoLayout:2b6502e246'
     compile files('libs/BASE64.jar')
 }
